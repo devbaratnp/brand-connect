@@ -21,8 +21,8 @@
         <div class="bc-list">
             @foreach($messages as $message)
                 <a href="{{ route('messages.show', $message) }}" style="text-decoration:none;color:inherit;">
-                    <div class="bc-list-item bc-flex" style="gap:1rem;align-items:center;padding:.75rem 1rem;{{ !$message->is_read ? 'background:var(--bc-bg-alt);border-left:3px solid var(--bc-primary);' : '' }}">
-                        <div style="width:44px;height:44px;border-radius:50%;background:var(--bc-bg-alt);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--bc-text-muted);flex-shrink:0;">
+                    <div class="bc-list-item bc-flex" style="gap:1rem;align-items:center;padding:.75rem 1rem;{{ !$message->is_read ? 'background:rgba(201,255,85,0.18);' : '' }}">
+                        <div style="width:44px;height:44px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--muted);flex-shrink:0;">
                             {{ substr($message->sender->name ?? 'U', 0, 1) }}
                         </div>
                         <div style="flex:1;min-width:0;">
@@ -30,16 +30,17 @@
                                 <span class="bc-list-item-title" style="{{ !$message->is_read ? 'font-weight:700;' : '' }}">
                                     {{ $message->sender->name ?? 'Unknown' }}
                                 </span>
-                                <span style="font-size:.75rem;color:var(--bc-text-muted);flex-shrink:0;margin-left:1rem;">
+                                <span style="font-size:.75rem;color:var(--muted);flex-shrink:0;margin-left:1rem;">
                                     {{ $message->created_at->diffForHumans() }}
                                 </span>
                             </div>
-                            <p class="bc-list-item-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;{{ !$message->is_read ? 'color:var(--bc-text);font-weight:500;' : '' }}">
+                            <p class="bc-list-item-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;{{ !$message->is_read ? 'color:var(--ink);font-weight:500;' : '' }}">
                                 {{ Str::limit($message->message, 80) }}
                             </p>
                         </div>
                         @if(!$message->is_read)
-                            <div style="width:10px;height:10px;border-radius:50%;background:var(--bc-primary);flex-shrink:0;"></div>
+                            <div style="width:10px;height:10px;border-radius:50%;background:var(--lime);flex-shrink:0;" aria-hidden="true"></div>
+                            <span class="bc-sr-only">Unread</span>
                         @endif
                     </div>
                 </a>
@@ -49,5 +50,8 @@
             @endforeach
         </div>
     </div>
+    @if($messages->hasPages())
+        <div class="bc-pagination">{{ $messages->links() }}</div>
+    @endif
 @endif
 @endsection

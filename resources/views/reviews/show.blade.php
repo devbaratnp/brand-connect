@@ -17,13 +17,13 @@
     </div>
 @else
     <div class="bc-flex" style="align-items:center;gap:1.5rem;margin-bottom:2rem;">
-        <div style="width:64px;height:64px;border-radius:50%;background:var(--bc-bg-alt);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1.75rem;color:var(--bc-text-muted);">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1.75rem;color:var(--muted);">
             {{ substr($user->name, 0, 1) }}
         </div>
         <div>
             <p style="font-weight:600;font-size:1.125rem;">{{ $user->name }}</p>
-            <p style="color:var(--bc-text-muted);font-size:.875rem;">
-                {{ number_format($reviews->avg('rating'), 1) }} average rating &middot; {{ $reviews->count() }} {{ Str::plural('review', $reviews->count()) }}
+            <p style="color:var(--muted);font-size:.875rem;">
+                {{ number_format($averageRating ?? 0, 1) }} average rating &middot; {{ $reviews->count() }} {{ Str::plural('review', $reviews->count()) }}
             </p>
         </div>
     </div>
@@ -34,27 +34,27 @@
                 <div class="bc-card-header bc-flex" style="justify-content:space-between;align-items:start;">
                     <div>
                         <div class="bc-flex" style="align-items:center;gap:.5rem;">
-                            <div style="width:36px;height:36px;border-radius:50%;background:var(--bc-bg-alt);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.875rem;color:var(--bc-text-muted);">
+                            <div style="width:36px;height:36px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.875rem;color:var(--muted);">
                                 {{ substr($review->reviewer->name ?? 'U', 0, 1) }}
                             </div>
                             <span class="bc-card-title" style="font-size:.95rem;">{{ $review->reviewer->name ?? 'Anonymous' }}</span>
                         </div>
                     </div>
-                    <span style="font-size:.875rem;color:var(--bc-text-muted);">
+                    <span style="font-size:.875rem;color:var(--muted);">
                         {{ $review->created_at->format('M d, Y') }}
                     </span>
                 </div>
                 <div class="bc-divider"></div>
                 <div class="bc-flex" style="gap:.25rem;margin-bottom:.5rem;">
                     @for($i = 1; $i <= 5; $i++)
-                        <span style="font-size:1.25rem;color:{{ $i <= $review->rating ? 'var(--bc-warning, #f59e0b)' : 'var(--bc-text-muted)' }};">&#9733;</span>
+                        <span style="font-size:1.25rem;color:{{ $i <= $review->rating ? '#f59e0b' : 'var(--muted)' }};">&#9733;</span>
                     @endfor
-                    <span style="font-size:.875rem;color:var(--bc-text-muted);margin-left:.5rem;">{{ $review->rating }}/5</span>
+                    <span style="font-size:.875rem;color:var(--muted);margin-left:.5rem;">{{ $review->rating }}/5</span>
                 </div>
-                <p style="line-height:1.6;color:var(--bc-text);">{{ $review->review }}</p>
+                <p style="line-height:1.6;color:var(--ink);">{{ $review->review }}</p>
                 @if($review->campaign)
                     <div class="bc-divider"></div>
-                    <a href="{{ route('campaigns.show', $review->campaign) }}" style="font-size:.875rem;color:var(--bc-primary);text-decoration:none;">
+                    <a href="{{ route('campaigns.show', $review->campaign) }}" style="font-size:.875rem;color:var(--purple);text-decoration:none;">
                         Campaign: {{ $review->campaign->title }}
                     </a>
                 @endif

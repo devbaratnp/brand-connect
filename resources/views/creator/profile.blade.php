@@ -112,7 +112,7 @@
             </div>
 
             <div class="bc-form-group">
-                <label class="bc-label" for="price_per_post">Price Per Post ($)</label>
+                <label class="bc-label" for="price_per_post">Price Per Post (Rs.)</label>
                 <input
                     type="number"
                     id="price_per_post"
@@ -193,8 +193,9 @@
             </div>
         </div>
 
-        <div style="margin-top: 1.5rem;">
+        <div class="bc-flex" style="gap:.75rem;margin-top: 1.5rem;">
             <button type="submit" class="bc-btn bc-btn-primary">Save Profile</button>
+            <a href="{{ route('dashboard') }}" class="bc-btn bc-btn-ghost">Back to Dashboard</a>
         </div>
     </form>
 </div>

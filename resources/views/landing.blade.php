@@ -4,7 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Brand Connect — Where Brands Meet Creators</title>
-    @fonts
+    <meta name="description" content="Brand Connect is the influencer marketing marketplace where brands meet creators. Post campaigns, find creators, collaborate and grow.">
+    <meta property="og:title" content="Brand Connect — Where Brands Meet Creators">
+    <meta property="og:description" content="Connect with top content creators, launch campaigns, and grow your brand through authentic partnerships.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:wght@400;500;600;700;800" rel="stylesheet">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
@@ -22,20 +27,23 @@
             <span class="nav-brand-icon">BC</span>
             Brand Connect
         </a>
+        <div class="nav-menu" id="navMenu">
         <nav class="nav-links">
+            <a href="#open-work">Open Work</a>
             <a href="#how-it-works">How It Works</a>
             <a href="#features">Features</a>
             <a href="#testimonials">Testimonials</a>
         </nav>
-        <div class="nav-actions">
-            @auth
-                <a href="{{ url('/dashboard') }}" class="btn btn-dark btn-sm">Dashboard</a>
-            @else
-                <a href="{{ route('login') }}" class="btn btn-ghost btn-sm">Log in</a>
-                <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Get Started</a>
-            @endauth
+            <div class="nav-actions">
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="btn btn-dark btn-sm">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-ghost btn-sm">Log in</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Get Started</a>
+                @endauth
+            </div>
         </div>
-        <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open'); document.querySelector('.nav-actions').classList.toggle('open')" aria-label="Menu">
+        <button class="nav-toggle" onclick="var m=document.getElementById('navMenu'); m.classList.toggle('open'); this.setAttribute('aria-expanded', m.classList.contains('open'))" aria-label="Menu" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
     </div>
@@ -63,7 +71,7 @@
                 <a href="{{ url('/dashboard') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
             @else
                 <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started Free</a>
-                <a href="{{ route('login') }}" class="btn btn-dark btn-lg">Browse Campaigns</a>
+                <a href="{{ route('campaigns.browse') }}" class="btn btn-dark btn-lg">Browse Campaigns</a>
             @endauth
         </div>
 
@@ -155,6 +163,64 @@
     </div>
 </section>
 
+<section class="open-work" id="open-work">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title">Open <span class="gradient-text-purple">work</span> from real brands</h2>
+            <p class="section-subtitle">Live campaigns accepting applications right now. Log in to apply in one click.</p>
+        </div>
+        @if($openWork->isEmpty())
+            <div class="work-empty reveal">
+                <p class="work-empty-text">No open work right now</p>
+                <p class="work-empty-sub">New opportunities appear here — check back soon.</p>
+                @auth
+                    @if(auth()->user()->isBrand())
+                        <a href="{{ route('campaigns.create') }}" class="btn btn-primary">Post a Campaign</a>
+                    @else
+                        <a href="{{ route('campaigns.browse') }}" class="btn btn-primary">Browse Campaigns</a>
+                    @endif
+                @else
+                    <a href="{{ route('register') }}" class="btn btn-primary">Get Started Free</a>
+                @endauth
+            </div>
+        @else
+            <div class="work-grid">
+                @foreach($openWork as $campaign)
+                    <div class="work-card reveal">
+                        <div class="work-card-top">
+                            <span class="work-status">Open</span>
+                            @if($campaign->category)
+                                <span class="work-category">{{ $campaign->category->name }}</span>
+                            @endif
+                        </div>
+                        <h3 class="work-title">{{ $campaign->title }}</h3>
+                        <p class="work-brand">{{ $campaign->brand->name ?? 'Brand' }}</p>
+                        <div class="work-meta">
+                            <span>Budget: {{ $campaign->budget !== null ? 'Rs. ' . number_format($campaign->budget, 2) : 'Not specified' }}</span>
+                            <span>Deadline: {{ $campaign->deadline ? \Carbon\Carbon::parse($campaign->deadline)->format('M d, Y') : 'Flexible' }}</span>
+                        </div>
+                        <div class="work-actions">
+                            <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-ghost btn-sm">Details</a>
+                            @if(auth()->check() && !auth()->user()->isCreator())
+                                <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-dark btn-sm">View Campaign</a>
+                            @else
+                                <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-primary btn-sm">Apply Now</a>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="work-more reveal">
+                @auth
+                    <a href="{{ route('campaigns.browse') }}" class="btn btn-dark">View All Opportunities</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-dark">Log in to Apply</a>
+                @endauth
+            </div>
+        @endif
+    </div>
+</section>
+
 <section class="how-it-works" id="how-it-works">
     <div class="container">
         <div class="section-header reveal">
@@ -193,7 +259,6 @@
 <section class="features" id="features">
     <div class="container">
         <div class="section-header reveal">
-            <span class="eyebrow">Features</span>
             <h2 class="section-title">Everything you need to<br><span class="gradient-text-purple">scale</span></h2>
         </div>
         <div class="bento-grid">
@@ -300,8 +365,7 @@
 <section class="testimonials" id="testimonials">
     <div class="container">
         <div class="section-header reveal">
-            <span class="eyebrow">Testimonials</span>
-            <h2 class="section-title">Loved by <span class="lime-text">creators</span> and brands</h2>
+            <h2 class="section-title">Loved by <span class="gradient-text-purple">creators</span> and brands</h2>
         </div>
         <div class="testimonials-grid">
             <div class="testimonial-card reveal reveal-delay-1">
@@ -435,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function() {
     left: 0;
     right: 0;
     z-index: 1000;
-    height: 76px;
+    height: 72px;
     background: rgba(255,255,255,0.86);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -444,12 +508,13 @@ document.addEventListener('DOMContentLoaded', function() {
 .nav-inner {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 0 max(20px, calc((100vw - 1180px) / 2));
+    padding: 0 20px;
     height: 100%;
     display: flex;
     align-items: center;
     gap: 40px;
 }
+.nav-menu { display: contents; }
 .nav-brand {
     font-size: 18px;
     font-weight: 800;
@@ -510,13 +575,17 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 /* === BUTTONS === */
+:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+}
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-weight: 650;
     font-size: 14px;
-    border-radius: 12px;
+    border-radius: 10px;
     text-decoration: none;
     cursor: pointer;
     border: none;
@@ -670,7 +739,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .mockup-bar-title {
     margin-left: 12px;
     font-size: 12px;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.6);
     font-weight: 500;
 }
 .mockup-body {
@@ -761,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .mockup-avatar:nth-child(2) { background: rgba(201,255,85,0.3); }
 .mockup-applicants {
     font-size: 12px;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.6);
 }
 .mockup-panel {
     background: #131a16;
@@ -771,7 +840,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .mockup-panel-title {
     font-size: 13px;
     font-weight: 700;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.65);
     margin-bottom: 16px;
 }
 .mockup-stat-card {
@@ -789,7 +858,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .mockup-stat-label {
     font-size: 12px;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.6);
     margin-top: 2px;
 }
 .mockup-chip {
@@ -848,11 +917,113 @@ document.addEventListener('DOMContentLoaded', function() {
     color: var(--ink);
 }
 
+/* === OPEN WORK === */
+.open-work {
+    padding: 120px 0;
+    background: var(--paper);
+}
+.section-subtitle {
+    font-size: 17px;
+    color: var(--muted);
+    margin-top: 16px;
+    line-height: 1.6;
+}
+.work-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.work-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.work-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+}
+.work-card-top {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.work-status {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #dcfce7;
+    color: #16a34a;
+}
+.work-category {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+}
+.work-title {
+    font-size: 19px;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+}
+.work-brand {
+    font-size: 14px;
+    color: var(--muted);
+}
+.work-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+    margin-top: 4px;
+}
+.work-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 8px;
+}
+.work-more {
+    text-align: center;
+    margin-top: 40px;
+}
+.work-empty {
+    text-align: center;
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 56px 24px;
+}
+.work-empty .btn { margin-top: 8px; }
+.work-empty-text {
+    font-size: 18px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+.work-empty-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 24px;
+}
+
 /* === SECTION COMMON === */
 .container {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 0 max(20px, calc((100vw - 1180px) / 2));
+    padding: 0 20px;
 }
 .section-header {
     text-align: center;
@@ -928,7 +1099,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .step-desc {
     font-size: 15px;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.68);
     line-height: 1.6;
 }
 
@@ -1190,7 +1361,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .cta-subtitle {
     font-size: 18px;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.72);
     max-width: 480px;
     margin: 0 auto 40px;
     line-height: 1.6;
@@ -1224,7 +1395,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .footer-tagline {
     font-size: 14px;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.62);
     line-height: 1.6;
     margin-top: 16px;
     max-width: 260px;
@@ -1242,11 +1413,11 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .footer-col a {
     font-size: 14px;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.68);
     text-decoration: none;
     transition: color 0.2s;
 }
-.footer-col a:hover { color: rgba(255,255,255,0.7); }
+.footer-col a:hover { color: #fff; }
 .footer-bottom {
     padding-top: 32px;
     border-top: 1px solid rgba(255,255,255,0.06);
@@ -1254,7 +1425,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .footer-bottom p {
     font-size: 13px;
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.55);
 }
 .footer .nav-brand { color: #fff; }
 
@@ -1276,29 +1447,55 @@ document.addEventListener('DOMContentLoaded', function() {
 @media (max-width: 1050px) {
     .bento-grid { grid-template-columns: 1fr; }
     .bento-large { grid-row: auto; }
+    .work-grid { grid-template-columns: repeat(2, 1fr); }
     .mockup-body { grid-template-columns: 1fr; }
     .mockup-sidebar, .mockup-panel { display: none; }
 }
 @media (max-width: 820px) {
-    .nav-links, .nav-actions { display: none; }
-    .nav-links.open, .nav-actions.open {
+    .nav-inner { gap: 16px; }
+    .nav-brand { flex: 1; }
+    .nav-menu { display: none; }
+    .nav-menu.open {
         display: flex;
         position: absolute;
-        top: 76px;
+        top: 72px;
         left: 0;
         right: 0;
         background: rgba(255,255,255,0.98);
         backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
         flex-direction: column;
         padding: 20px;
         border-bottom: 1px solid var(--line);
-        gap: 12px;
+        gap: 16px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.1);
     }
+    .nav-menu.open .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .nav-menu.open .nav-links a {
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+    .nav-menu.open .nav-links a:hover { background: rgba(0,0,0,0.04); }
+    .nav-menu.open .nav-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+        border-top: 1px solid var(--line);
+        padding-top: 16px;
+    }
+    .nav-menu.open .nav-actions .btn { width: 100%; }
     .nav-toggle { display: flex; }
     .hero { min-height: auto; padding: 140px 0 60px; }
     .hero-mockup { margin-bottom: -40px; }
     .steps-grid { grid-template-columns: 1fr; }
     .step-card:not(:last-child)::after { display: none; }
+    .work-grid { grid-template-columns: 1fr; }
     .sides-grid { grid-template-columns: 1fr; }
     .testimonials-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
@@ -1317,5 +1514,6 @@ document.addEventListener('DOMContentLoaded', function() {
     .mockup-chip { animation: none; }
 }
 </style>
+@include('partials.ai-assistant')
 </body>
 </html>

@@ -15,9 +15,10 @@ class AdminController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isAdmin()) {
+            if (! Auth::user()->isAdmin()) {
                 abort(403);
             }
+
             return $next($request);
         });
     }
@@ -44,12 +45,14 @@ class AdminController extends Controller
         $users = User::with('creatorProfile', 'brandProfile')
             ->latest()
             ->paginate(20);
+
         return view('admin.users', compact('users'));
     }
 
     public function toggleUserStatus(User $user)
     {
-        $user->update(['is_active' => !$user->is_active]);
+        $user->update(['is_active' => ! $user->is_active]);
+
         return back()->with('success', 'User status updated successfully.');
     }
 
@@ -59,6 +62,7 @@ class AdminController extends Controller
             return back()->with('error', 'Cannot delete admin users.');
         }
         $user->delete();
+
         return back()->with('success', 'User deleted successfully.');
     }
 
@@ -67,18 +71,21 @@ class AdminController extends Controller
         $campaigns = Campaign::with('brand', 'category', 'applications')
             ->latest()
             ->paginate(20);
+
         return view('admin.campaigns', compact('campaigns'));
     }
 
     public function deleteCampaign(Campaign $campaign)
     {
         $campaign->delete();
+
         return back()->with('success', 'Campaign deleted successfully.');
     }
 
     public function categories()
     {
         $categories = Category::withCount('creatorProfiles', 'campaigns')->get();
+
         return view('admin.categories', compact('categories'));
     }
 
@@ -98,6 +105,7 @@ class AdminController extends Controller
     public function deleteCategory(Category $category)
     {
         $category->delete();
+
         return back()->with('success', 'Category deleted successfully.');
     }
 }

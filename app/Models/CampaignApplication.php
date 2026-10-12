@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CampaignApplication extends Model
 {
     protected $fillable = [
-        'campaign_id', 'creator_id', 'message', 'status'
+        'campaign_id', 'creator_id', 'message', 'status',
     ];
 
     public function campaign(): BelongsTo

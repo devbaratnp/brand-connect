@@ -13,9 +13,10 @@ class CreatorProfileController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isCreator()) {
+            if (! Auth::user()->isCreator()) {
                 abort(403);
             }
+
             return $next($request);
         });
     }
@@ -24,6 +25,7 @@ class CreatorProfileController extends Controller
     {
         $profile = Auth::user()->creatorProfile;
         $categories = Category::all();
+
         return view('creator.profile', compact('profile', 'categories'));
     }
 
@@ -40,7 +42,7 @@ class CreatorProfileController extends Controller
             'portfolio' => 'nullable|string',
             'price_per_post' => 'nullable|numeric|min:0',
             'audience_details' => 'nullable|string',
-            'availability' => 'nullable|in:available,busy,not_available',
+            'availability' => 'nullable|in:available,busy,unavailable',
         ]);
 
         $profile = Auth::user()->creatorProfile;

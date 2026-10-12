@@ -9,7 +9,7 @@
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
         </a>
         <div class="bc-flex" style="align-items:center;gap:.75rem;">
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--bc-bg-alt);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--bc-text-muted);">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--muted);">
                 {{ substr($user->name, 0, 1) }}
             </div>
             <div>
@@ -27,12 +27,12 @@
             @endphp
             <div class="bc-chat-msg {{ $isSent ? 'bc-chat-sent' : 'bc-chat-received' }}" style="display:flex;flex-direction:column;{{ $isSent ? 'align-items:flex-end;' : 'align-items:flex-start;' }}max-width:75%;{{ $isSent ? 'align-self:flex-end;' : 'align-self:flex-start;' }}">
                 @if(!$isSent)
-                    <span class="bc-chat-sender" style="font-size:.75rem;font-weight:600;color:var(--bc-text-muted);margin-bottom:.25rem;">{{ $msg->sender->name ?? 'Unknown' }}</span>
+                    <span class="bc-chat-sender" style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.25rem;">{{ $msg->sender->name ?? 'Unknown' }}</span>
                 @endif
-                <div style="background:{{ $isSent ? 'var(--bc-primary)' : 'var(--bc-bg-alt)' }};color:{{ $isSent ? 'var(--bc-primary-text, #fff)' : 'var(--bc-text)' }};padding:.75rem 1rem;border-radius:{{ $isSent ? '1rem 1rem .25rem 1rem' : '1rem 1rem 1rem .25rem' }};line-height:1.5;word-break:break-word;">
+                <div style="background:{{ $isSent ? 'var(--ink)' : 'var(--paper)' }};color:{{ $isSent ? '#fff' : 'var(--ink)' }};{{ !$isSent ? 'border:1px solid var(--line);' : '' }}padding:.75rem 1rem;border-radius:{{ $isSent ? '1rem 1rem .25rem 1rem' : '1rem 1rem 1rem .25rem' }};line-height:1.5;word-break:break-word;">
                     {!! nl2br(e($msg->message)) !!}
                 </div>
-                <span class="bc-chat-time" style="font-size:.7rem;color:var(--bc-text-muted);margin-top:.25rem;">{{ $msg->created_at->format('g:i A') }}</span>
+                <span class="bc-chat-time" style="font-size:.7rem;color:var(--muted);margin-top:.25rem;">{{ $msg->created_at->format('g:i A') }}</span>
             </div>
         @empty
             <div class="bc-empty">
@@ -49,12 +49,13 @@
         <input type="hidden" name="receiver_id" value="{{ $user->id }}">
         <div class="bc-flex" style="gap:.75rem;align-items:flex-end;">
             <div style="flex:1;">
-                <textarea name="message" class="bc-input" rows="2" placeholder="Type a message..." required style="resize:none;">{{ old('message') }}</textarea>
+                <label class="bc-label" for="reply-message">Reply</label>
+                <textarea name="message" id="reply-message" class="bc-input" rows="2" placeholder="Type a message..." required style="resize:none;">{{ old('message') }}</textarea>
                 @error('message')
                     <p class="bc-error">{{ $message }}</p>
                 @enderror
             </div>
-            <button type="submit" class="bc-btn bc-btn-primary" style="height:fit-content;padding:.6rem 1.5rem;">
+            <button type="submit" class="bc-btn bc-btn-primary">
                 Send
             </button>
         </div>

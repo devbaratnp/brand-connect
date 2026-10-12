@@ -6,7 +6,7 @@
 <div class="bc-page-header bc-flex" style="justify-content:space-between;align-items:start;">
     <div>
         <h1 class="bc-page-title">{{ $campaign->title }}</h1>
-        <p style="color:var(--bc-text-muted);margin-top:.25rem;">
+        <p style="color:var(--muted);margin-top:.25rem;">
             by {{ $campaign->brand->name ?? 'Brand' }}
         </p>
     </div>
@@ -16,6 +16,8 @@
         <span class="bc-badge bc-badge-progress">In Progress</span>
     @elseif($campaign->status === 'closed')
         <span class="bc-badge bc-badge-closed">Closed</span>
+    @elseif($campaign->status === 'cancelled')
+        <span class="bc-badge bc-badge-cancelled">Cancelled</span>
     @else
         <span class="bc-badge bc-badge-pending">{{ ucfirst($campaign->status) }}</span>
     @endif
@@ -27,7 +29,7 @@
             <h2 class="bc-card-title">Campaign Details</h2>
         </div>
         <div class="bc-divider"></div>
-        <div style="line-height:1.7;color:var(--bc-text);">
+        <div style="line-height:1.7;color:var(--ink);">
             {!! nl2br(e($campaign->description)) !!}
         </div>
 
@@ -35,11 +37,11 @@
         <div class="bc-list">
             <div class="bc-list-item" style="padding:.5rem 0;">
                 <span class="bc-list-item-sub">Budget</span>
-                <span class="bc-list-item-title" style="font-size:1.25rem;">Rs. {{ number_format($campaign->budget, 2) }}</span>
+                <span class="bc-list-item-title" style="font-size:1.25rem;">{{ $campaign->budget !== null ? 'Rs. ' . number_format($campaign->budget, 2) : 'Not specified' }}</span>
             </div>
             <div class="bc-list-item" style="padding:.5rem 0;">
                 <span class="bc-list-item-sub">Deadline</span>
-                <span class="bc-list-item-title">{{ \Carbon\Carbon::parse($campaign->deadline)->format('M d, Y') }}</span>
+                <span class="bc-list-item-title">{{ $campaign->deadline ? \Carbon\Carbon::parse($campaign->deadline)->format('M d, Y') : 'Flexible' }}</span>
             </div>
             <div class="bc-list-item" style="padding:.5rem 0;">
                 <span class="bc-list-item-sub">Category</span>
@@ -62,12 +64,11 @@
                 </div>
                 <div class="bc-divider"></div>
 
-                @if($campaign->applications->where('creator_id', auth()->id())->isNotEmpty())
+                @if($hasApplied)
                     <div class="bc-badge bc-badge-progress" style="font-size:.875rem;">You have already applied</div>
                 @else
-                    <form action="{{ route('applications.store') }}" method="POST">
+                    <form action="{{ route('campaigns.apply', $campaign) }}" method="POST">
                         @csrf
-                        <input type="hidden" name="campaign_id" value="{{ $campaign->id }}">
                         <div class="bc-form-group">
                             <label class="bc-label" for="message">Your Message</label>
                             <textarea name="message" id="message" class="bc-input" rows="4" placeholder="Why are you a good fit for this campaign?" required>{{ old('message') }}</textarea>
@@ -96,7 +97,12 @@
                 <div class="bc-divider"></div>
                 <div class="bc-flex" style="gap:.75rem;">
                     <a href="{{ route('campaigns.edit', $campaign) }}" class="bc-btn bc-btn-dark bc-btn-sm">Edit Campaign</a>
-                    <a href="{{ route('campaigns.applications', $campaign) }}" class="bc-btn bc-btn-ghost bc-btn-sm">View Applications</a>
+                    <a href="{{ route('brand.applications', $campaign) }}" class="bc-btn bc-btn-ghost bc-btn-sm">View Applications</a>
+                    <form action="{{ route('campaigns.destroy', $campaign) }}" method="POST" onsubmit="return confirm('Delete this campaign? This cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bc-btn bc-btn-sm bc-btn-danger">Delete</button>
+                    </form>
                 </div>
             </div>
         @endif
@@ -107,12 +113,12 @@
             </div>
             <div class="bc-divider"></div>
             <div class="bc-flex" style="align-items:center;gap:1rem;">
-                <div style="width:48px;height:48px;border-radius:50%;background:var(--bc-bg-alt);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1.25rem;color:var(--bc-text-muted);">
+                <div style="width:48px;height:48px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1.25rem;color:var(--muted);">
                     {{ substr($campaign->brand->name ?? 'B', 0, 1) }}
                 </div>
                 <div>
                     <p class="bc-list-item-title">{{ $campaign->brand->name ?? 'Brand' }}</p>
-                    <a href="{{ route('brands.show', $campaign->brand_id) }}" class="bc-list-item-sub" style="color:var(--bc-primary);text-decoration:none;">View Profile</a>
+                    <a href="{{ route('reviews.show', $campaign->brand_id) }}" class="bc-list-item-sub" style="color:var(--purple);text-decoration:none;">View Reviews</a>
                 </div>
             </div>
         </div>

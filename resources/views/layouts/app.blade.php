@@ -9,18 +9,43 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #161c18; background: #f5f7f5; -webkit-font-smoothing: antialiased; line-height: 1.5; }
-        :root { --lime:#c9ff55; --lime-strong:#a8ed2e; --purple:#7c5cff; --purple-deep:#5b3df5; --ink:#161c18; --muted:#667069; --soft:#f5f7f5; --paper:#ffffff; --dark:#101613; --dark-deep:#0e1310; --line:#e4e9e5; }
+        :root { --lime:#c9ff55; --lime-strong:#a8ed2e; --purple:#7c5cff; --purple-deep:#5b3df5; --ink:#161c18; --muted:#667069; --soft:#f5f7f5; --paper:#ffffff; --dark:#101613; --dark-deep:#0e1310; --line:#e4e9e5; --sidebar-w:260px; }
 
-        .bc-nav { position:sticky; top:0; z-index:1000; height:72px; background:rgba(255,255,255,0.86); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom:1px solid rgba(228,233,229,0.6); }
-        .bc-nav-inner { max-width:1180px; margin:0 auto; padding:0 max(20px,calc((100vw - 1180px)/2)); height:100%; display:flex; align-items:center; gap:32px; }
-        .bc-brand { font-size:18px; font-weight:800; letter-spacing:-0.04em; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:10px; white-space:nowrap; }
-        .bc-brand-icon { width:34px; height:34px; background:var(--ink); color:var(--lime); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; }
-        .bc-nav-links { display:flex; gap:4px; flex:1; }
-        .bc-nav-links a { font-size:14px; font-weight:600; color:var(--muted); text-decoration:none; padding:8px 14px; border-radius:10px; transition:all .15s; }
-        .bc-nav-links a:hover, .bc-nav-links a.active { color:var(--ink); background:rgba(0,0,0,0.04); }
-        .bc-nav-right { display:flex; gap:8px; align-items:center; }
-        .bc-nav-toggle { display:none; background:none; border:none; cursor:pointer; padding:8px; flex-direction:column; gap:5px; }
-        .bc-nav-toggle span { width:20px; height:2px; background:var(--ink); border-radius:2px; }
+        .bc-layout { display:flex; min-height:100vh; }
+
+        .bc-sidebar { position:fixed; top:0; left:0; width:var(--sidebar-w); height:100vh; background:var(--paper); border-right:1px solid var(--line); display:flex; flex-direction:column; z-index:1000; transition:transform .25s; }
+        .bc-sidebar-brand { padding:20px 20px 16px; border-bottom:1px solid var(--line); }
+        .bc-sidebar-brand a { font-size:18px; font-weight:800; letter-spacing:-0.04em; color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:10px; }
+        .bc-sidebar-brand-icon { width:34px; height:34px; background:var(--ink); color:var(--lime); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0; }
+
+        .bc-sidebar-nav { flex:1; overflow-y:auto; padding:12px 10px; display:flex; flex-direction:column; gap:2px; }
+        .bc-sidebar-section { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); padding:16px 12px 6px; }
+        .bc-sidebar-link { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; font-size:14px; font-weight:600; color:var(--muted); text-decoration:none; transition:all .15s; }
+        .bc-sidebar-link i { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
+        .bc-sidebar-link:hover { color:var(--ink); background:rgba(0,0,0,0.04); }
+        .bc-sidebar-link.active { color:var(--ink); background:rgba(201,255,85,0.25); }
+        .bc-sidebar-link.active i { color:var(--ink); }
+
+        .bc-sidebar-user { padding:14px 12px; border-top:1px solid var(--line); }
+        .bc-sidebar-user-info { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:10px; text-decoration:none; color:var(--ink); transition:background .15s; }
+        .bc-sidebar-user-info:hover { background:rgba(0,0,0,0.03); }
+        .bc-sidebar-user-avatar { width:34px; height:34px; border-radius:10px; background:var(--ink); color:var(--lime); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0; }
+        .bc-sidebar-user-name { font-size:13px; font-weight:700; }
+        .bc-sidebar-user-role { font-size:11px; color:var(--muted); }
+        .bc-sidebar-logout { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; color:#dc2626; background:none; border:none; width:100%; cursor:pointer; font-family:inherit; transition:background .15s; margin-top:4px; }
+        .bc-sidebar-logout:hover { background:rgba(220,38,38,0.06); }
+
+        .bc-sidebar-toggle { display:none; position:fixed; top:12px; left:12px; z-index:1100; background:var(--paper); border:1px solid var(--line); border-radius:10px; cursor:pointer; padding:10px; flex-direction:column; gap:4px; }
+        .bc-sidebar-toggle:hover { box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+        .bc-sidebar-toggle span { width:18px; height:2px; background:var(--ink); border-radius:2px; display:block; }
+
+        .bc-main { margin-left:var(--sidebar-w); flex:1; min-height:100vh; }
+        .bc-page { padding:28px 32px 80px; min-height:100vh; }
+        .bc-page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
+        .bc-page-title { font-size:clamp(24px,2.5vw,32px); font-weight:800; letter-spacing:-0.05em; color:var(--ink); }
+        .bc-page-subtitle { font-size:15px; color:var(--muted); margin-top:4px; }
+
+        .bc-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:999; }
 
         .bc-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; font-weight:650; font-size:14px; font-family:inherit; border-radius:10px; text-decoration:none; cursor:pointer; border:none; transition:all .2s; white-space:nowrap; padding:9px 18px; height:40px; }
         .bc-btn:hover { transform:translateY(-1px); }
@@ -39,28 +64,24 @@
         .bc-btn-sm { height:34px; padding:6px 14px; font-size:13px; border-radius:8px; }
         .bc-btn-lg { height:48px; padding:12px 28px; font-size:15px; border-radius:12px; }
         .bc-btn-xs { height:28px; padding:4px 10px; font-size:12px; border-radius:6px; }
-
-        .bc-container { max-width:1180px; margin:0 auto; padding:0 max(20px,calc((100vw - 1180px)/2)); }
-        .bc-page { padding:32px 0 80px; min-height:calc(100vh - 72px); }
-        .bc-page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; flex-wrap:wrap; gap:12px; }
-        .bc-page-title { font-size:clamp(28px,3vw,36px); font-weight:800; letter-spacing:-0.05em; color:var(--ink); }
-        .bc-page-subtitle { font-size:15px; color:var(--muted); margin-top:4px; }
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid var(--purple); outline-offset:2px; }
 
         .bc-card { background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:28px; transition:box-shadow .2s; }
-        .bc-card:hover { box-shadow:0 8px 30px rgba(0,0,0,0.04); }
+        a:hover .bc-card { box-shadow:0 8px 30px rgba(0,0,0,0.04); }
         .bc-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
         .bc-card-title { font-size:18px; font-weight:750; letter-spacing:-0.03em; color:var(--ink); }
 
-        .bc-stat { background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px; }
-        .bc-stat-label { font-size:13px; font-weight:600; color:var(--muted); margin-bottom:8px; }
-        .bc-stat-value { font-size:28px; font-weight:800; letter-spacing:-0.04em; color:var(--ink); }
-        .bc-stat-sub { font-size:13px; color:var(--muted); margin-top:4px; }
-        .bc-stat-lime { border-left:3px solid var(--lime); }
-        .bc-stat-purple { border-left:3px solid var(--purple); }
-        .bc-stat-dark { border-left:3px solid var(--ink); }
+        .bc-stat { background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:20px; display:flex; align-items:flex-start; gap:16px; }
+        .bc-stat-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .bc-stat-icon-lime { background:#c9ff55; color:#161c18; }
+        .bc-stat-icon-purple { background:#7c5cff; color:#fff; }
+        .bc-stat-icon-ink { background:#161c18; color:#fff; }
+        .bc-stat-value { font-size:28px; font-weight:800; letter-spacing:-0.04em; color:var(--ink); line-height:1; }
+        .bc-stat-label { font-size:13px; font-weight:600; color:var(--muted); display:block; margin-top:4px; }
+        .bc-stat-sub { font-size:12px; color:var(--muted); display:block; margin-top:2px; }
 
-        .bc-table-wrap { background:var(--paper); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
-        .bc-table { width:100%; border-collapse:collapse; }
+        .bc-table-wrap { background:var(--paper); border:1px solid var(--line); border-radius:16px; overflow-x:auto; }
+        .bc-table { width:100%; min-width:640px; border-collapse:collapse; }
         .bc-table th { text-align:left; padding:14px 18px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); background:var(--soft); border-bottom:1px solid var(--line); }
         .bc-table td { padding:14px 18px; font-size:14px; border-bottom:1px solid var(--line); color:var(--ink); vertical-align:middle; }
         .bc-table tr:last-child td { border-bottom:none; }
@@ -71,6 +92,8 @@
         .bc-badge-progress { background:#ede9fe; color:#7c3aed; }
         .bc-badge-closed { background:#f3f4f6; color:#6b7280; }
         .bc-badge-pending { background:#fef3c7; color:#d97706; }
+        .bc-badge-in_progress { background:#ede9fe; color:#7c3aed; }
+        .bc-badge-cancelled { background:#f3f4f6; color:#6b7280; }
         .bc-badge-accepted { background:#dcfce7; color:#16a34a; }
         .bc-badge-rejected { background:#fee2e2; color:#dc2626; }
         .bc-badge-admin { background:#fee2e2; color:#dc2626; }
@@ -78,6 +101,7 @@
         .bc-badge-creator { background:#dcfce7; color:#16a34a; }
         .bc-badge-active { background:#dcfce7; color:#16a34a; }
         .bc-badge-inactive { background:#f3f4f6; color:#6b7280; }
+        .bc-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
 
         .bc-form-group { margin-bottom:20px; }
         .bc-label { display:block; font-size:13px; font-weight:700; color:var(--ink); margin-bottom:6px; letter-spacing:-0.01em; }
@@ -106,6 +130,15 @@
         .bc-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
         .bc-grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
         .bc-flex { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+        .bc-campaign-card { display:flex; flex-direction:column; padding:20px; border:1px solid var(--line); border-radius:14px; text-decoration:none; color:inherit; transition:all .2s; }
+        .bc-campaign-card:hover { border-color:var(--lime); box-shadow:0 4px 20px rgba(201,255,85,0.1); }
+        .bc-campaign-card-body { flex:1; }
+        .bc-campaign-card-title { font-size:16px; font-weight:750; letter-spacing:-0.03em; color:var(--ink); margin-bottom:8px; }
+        .bc-campaign-card-meta { display:flex; flex-wrap:wrap; gap:12px; font-size:13px; color:var(--muted); margin-bottom:8px; align-items:center; }
+        .bc-campaign-card-meta i { margin-right:3px; }
+        .bc-campaign-card-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+        .bc-campaign-card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); }
 
         .bc-empty { text-align:center; padding:48px 20px; color:var(--muted); }
         .bc-empty-icon { font-size:40px; margin-bottom:12px; opacity:0.3; }
@@ -136,9 +169,12 @@
         .bc-role-card span { font-size:14px; font-weight:700; }
 
         @media (max-width:820px) {
-            .bc-nav-links { display:none; position:absolute; top:72px; left:0; right:0; background:rgba(255,255,255,0.98); backdrop-filter:blur(18px); flex-direction:column; padding:16px 20px; border-bottom:1px solid var(--line); gap:4px; }
-            .bc-nav-links.open { display:flex; }
-            .bc-nav-toggle { display:flex; }
+            .bc-sidebar { transform:translateX(-100%); }
+            .bc-sidebar.open { transform:translateX(0); }
+            .bc-sidebar-toggle { display:flex; }
+            .bc-overlay.open { display:block; }
+            .bc-main { margin-left:0; }
+            .bc-page { padding:28px 20px 80px; padding-top:68px; }
             .bc-grid-2, .bc-grid-3, .bc-grid-4, .bc-role-cards { grid-template-columns:1fr; }
             .bc-page-header { flex-direction:column; align-items:flex-start; }
         }
@@ -147,99 +183,138 @@
 </head>
 <body>
 
-<nav class="bc-nav">
-    <div class="bc-nav-inner">
-        <a href="{{ url('/') }}" class="bc-brand">
-            <span class="bc-brand-icon">BC</span>
-            Brand Connect
-        </a>
-        <div class="bc-nav-links" id="bc-nav-links">
+<div class="bc-layout">
+    <button class="bc-sidebar-toggle" id="bc-sidebar-toggle" onclick="toggleSidebar()" aria-label="Open navigation" aria-expanded="false" aria-controls="bc-sidebar">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="bc-overlay" id="bc-overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="bc-sidebar" id="bc-sidebar" aria-label="Primary">
+        <div class="bc-sidebar-brand">
+            <a href="{{ url('/') }}">
+                <span class="bc-sidebar-brand-icon">BC</span>
+                Brand Connect
+            </a>
+        </div>
+
+        <nav class="bc-sidebar-nav">
             @auth
                 @if (Auth::user()->isBrand())
-                    <a href="{{ route('brand.campaigns') }}" class="{{ request()->routeIs('brand.campaigns') ? 'active' : '' }}">
-                        <i class="bi bi-megaphone"></i> My Campaigns
+                    <div class="bc-sidebar-section">Brand</div>
+                    <a href="{{ route('dashboard') }}" class="bc-sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-grid" aria-hidden="true"></i> Overview
                     </a>
-                    <a href="{{ route('campaigns.create') }}" class="{{ request()->routeIs('campaigns.create') ? 'active' : '' }}">
-                        <i class="bi bi-plus-circle"></i> Post Campaign
+                    <a href="{{ route('brand.campaigns') }}" class="bc-sidebar-link {{ request()->routeIs('brand.campaigns') ? 'active' : '' }}">
+                        <i class="bi bi-megaphone" aria-hidden="true"></i> My Campaigns
+                    </a>
+                    <a href="{{ route('campaigns.create') }}" class="bc-sidebar-link {{ request()->routeIs('campaigns.create') ? 'active' : '' }}">
+                        <i class="bi bi-plus-circle" aria-hidden="true"></i> Post Campaign
+                    </a>
+                    <a href="{{ route('messages.inbox') }}" class="bc-sidebar-link {{ request()->routeIs('messages.*') ? 'active' : '' }}">
+                        <i class="bi bi-envelope" aria-hidden="true"></i> Messages
+                    </a>
+                    <a href="{{ route('deliverables.index') }}" class="bc-sidebar-link {{ request()->routeIs('deliverables.*') ? 'active' : '' }}">
+                        <i class="bi bi-box" aria-hidden="true"></i> Deliverables
+                    </a>
+                    <a href="{{ route('brand.profile') }}" class="bc-sidebar-link {{ request()->routeIs('brand.profile') ? 'active' : '' }}">
+                        <i class="bi bi-person" aria-hidden="true"></i> Profile
                     </a>
                 @elseif (Auth::user()->isCreator())
-                    <a href="{{ route('campaigns.browse') }}" class="{{ request()->routeIs('campaigns.browse') ? 'active' : '' }}">
-                        <i class="bi bi-search"></i> Browse
+                    <div class="bc-sidebar-section">Creator</div>
+                    <a href="{{ route('dashboard') }}" class="bc-sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-grid" aria-hidden="true"></i> Overview
                     </a>
-                    <a href="{{ route('creator.applications') }}" class="{{ request()->routeIs('creator.applications') ? 'active' : '' }}">
-                        <i class="bi bi-file-earmark-text"></i> Applications
+                    <a href="{{ route('campaigns.browse') }}" class="bc-sidebar-link {{ request()->routeIs('campaigns.browse') ? 'active' : '' }}">
+                        <i class="bi bi-search" aria-hidden="true"></i> Opportunities
+                    </a>
+                    <a href="{{ route('creator.applications') }}" class="bc-sidebar-link {{ request()->routeIs('creator.applications') ? 'active' : '' }}">
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> My Applications
+                    </a>
+                    <a href="{{ route('messages.inbox') }}" class="bc-sidebar-link {{ request()->routeIs('messages.*') ? 'active' : '' }}">
+                        <i class="bi bi-envelope" aria-hidden="true"></i> Messages
+                    </a>
+                    <a href="{{ route('deliverables.index') }}" class="bc-sidebar-link {{ request()->routeIs('deliverables.*') ? 'active' : '' }}">
+                        <i class="bi bi-box" aria-hidden="true"></i> Deliverables
+                    </a>
+                    <a href="{{ route('reviews.show', Auth::id()) }}" class="bc-sidebar-link {{ request()->routeIs('reviews.show') ? 'active' : '' }}">
+                        <i class="bi bi-star" aria-hidden="true"></i> Rating
+                    </a>
+                    <a href="{{ route('creator.profile') }}" class="bc-sidebar-link {{ request()->routeIs('creator.profile') ? 'active' : '' }}">
+                        <i class="bi bi-person" aria-hidden="true"></i> Profile
                     </a>
                 @elseif (Auth::user()->isAdmin())
-                    <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">
-                        <i class="bi bi-people"></i> Users
+                    <div class="bc-sidebar-section">Admin</div>
+                    <a href="{{ route('admin.dashboard') }}" class="bc-sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-grid" aria-hidden="true"></i> Overview
                     </a>
-                    <a href="{{ route('admin.campaigns') }}" class="{{ request()->routeIs('admin.campaigns') ? 'active' : '' }}">
-                        <i class="bi bi-megaphone"></i> Campaigns
+                    <a href="{{ route('admin.users') }}" class="bc-sidebar-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                        <i class="bi bi-people" aria-hidden="true"></i> Users
                     </a>
-                    <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories') ? 'active' : '' }}">
-                        <i class="bi bi-tags"></i> Categories
+                    <a href="{{ route('admin.campaigns') }}" class="bc-sidebar-link {{ request()->routeIs('admin.campaigns') ? 'active' : '' }}">
+                        <i class="bi bi-megaphone" aria-hidden="true"></i> Campaigns
+                    </a>
+                    <a href="{{ route('admin.categories') }}" class="bc-sidebar-link {{ request()->routeIs('admin.categories') ? 'active' : '' }}">
+                        <i class="bi bi-tags" aria-hidden="true"></i> Categories
+                    </a>
+                    <a href="{{ route('messages.inbox') }}" class="bc-sidebar-link {{ request()->routeIs('messages.*') ? 'active' : '' }}">
+                        <i class="bi bi-envelope" aria-hidden="true"></i> Messages
                     </a>
                 @endif
-                <a href="{{ route('messages.inbox') }}" class="{{ request()->routeIs('messages.*') ? 'active' : '' }}">
-                    <i class="bi bi-envelope"></i> Messages
-                </a>
             @endauth
-        </div>
-        <div class="bc-nav-right">
-            @auth
-                <div style="position:relative">
-                    <button class="bc-btn bc-btn-ghost bc-btn-sm" onclick="this.nextElementSibling.classList.toggle('open')" style="gap:6px;">
-                        <i class="bi bi-person-circle"></i> {{ Str::limit(Auth::user()->name, 15) }} <i class="bi bi-chevron-down" style="font-size:11px;"></i>
-                    </button>
-                    <div style="display:none; position:absolute; right:0; top:calc(100% + 6px); background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:6px; min-width:180px; box-shadow:0 12px 40px rgba(0,0,0,0.1); z-index:100;" class="bc-dropdown">
-                        <a href="{{ route('dashboard') }}" style="display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; color:var(--ink); text-decoration:none;"><i class="bi bi-grid"></i> Dashboard</a>
-                        @if (Auth::user()->isCreator())
-                            <a href="{{ route('creator.profile') }}" style="display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; color:var(--ink); text-decoration:none;"><i class="bi bi-person"></i> My Profile</a>
-                        @elseif (Auth::user()->isBrand())
-                            <a href="{{ route('brand.profile') }}" style="display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; color:var(--ink); text-decoration:none;"><i class="bi bi-building"></i> Company Profile</a>
-                        @endif
-                        <hr style="border:none; border-top:1px solid var(--line); margin:4px 0;">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" style="display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; color:#dc2626; background:none; border:none; width:100%; cursor:pointer; font-family:inherit;"><i class="bi bi-box-arrow-right"></i> Logout</button>
-                        </form>
-                    </div>
-                </div>
-            @else
-                <a href="{{ route('login') }}" class="bc-btn bc-btn-ghost bc-btn-sm">Log in</a>
-                <a href="{{ route('register') }}" class="bc-btn bc-btn-primary bc-btn-sm">Get Started</a>
-            @endauth
-            <button class="bc-nav-toggle" onclick="document.getElementById('bc-nav-links').classList.toggle('open')" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </div>
-</nav>
+        </nav>
 
-<div class="bc-page">
-    <div class="bc-container">
-        @if (session('success'))
-            <div class="bc-alert bc-alert-success">
-                <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="bc-alert bc-alert-error">
-                <i class="bi bi-exclamation-triangle-fill"></i> {{ session('error') }}
-            </div>
-        @endif
-        @yield('content')
-    </div>
+        @auth
+        <div class="bc-sidebar-user">
+            <a href="{{ Auth::user()->isCreator() ? route('creator.profile') : (Auth::user()->isBrand() ? route('brand.profile') : '#') }}" class="bc-sidebar-user-info">
+                <div class="bc-sidebar-user-avatar">{{ substr(Auth::user()->name, 0, 2) }}</div>
+                <div>
+                    <div class="bc-sidebar-user-name">{{ Auth::user()->name }}</div>
+                    <div class="bc-sidebar-user-role">{{ ucfirst(Auth::user()->role) }}</div>
+                </div>
+            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="bc-sidebar-logout">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
+                </button>
+            </form>
+        </div>
+        @endauth
+    </aside>
+
+    <main class="bc-main">
+        <div class="bc-page">
+            @if (session('success'))
+                <div class="bc-alert bc-alert-success">
+                    <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="bc-alert bc-alert-error">
+                    <i class="bi bi-exclamation-triangle-fill"></i> {{ session('error') }}
+                </div>
+            @endif
+            @yield('content')
+        </div>
+    </main>
 </div>
 
 <script>
+function toggleSidebar(force) {
+    var sidebar = document.getElementById('bc-sidebar');
+    var overlay = document.getElementById('bc-overlay');
+    var toggle = document.getElementById('bc-sidebar-toggle');
+    var open = typeof force === 'boolean' ? force : !sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', open);
+    overlay.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    if (!open) toggle.focus();
+}
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') toggleSidebar(false);
+});
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.bc-dropdown').forEach(function(dd) {
-        var btn = dd.previousElementSibling;
-        document.addEventListener('click', function(e) {
-            if (!btn.contains(e.target) && !dd.contains(e.target)) dd.classList.remove('open');
-        });
-    });
     document.querySelectorAll('.bc-role-card').forEach(function(card) {
         card.addEventListener('click', function() {
             document.querySelectorAll('.bc-role-card').forEach(function(c) { c.classList.remove('selected'); });
@@ -247,7 +322,21 @@ document.addEventListener('DOMContentLoaded', function() {
             card.querySelector('input[type=radio]').checked = true;
         });
     });
+    var sidebar = document.getElementById('bc-sidebar');
+    sidebar.querySelectorAll('.bc-sidebar-link').forEach(function(link) {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 820) {
+                toggleSidebar(false);
+            }
+        });
+    });
+    document.querySelectorAll('form:not([data-ai-form])').forEach(function(form) {
+        form.addEventListener('submit', function() {
+            form.querySelectorAll('button[type=submit]').forEach(function(btn) { btn.disabled = true; });
+        });
+    });
 });
 </script>
+@include('partials.ai-assistant')
 </body>
 </html>

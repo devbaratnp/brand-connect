@@ -9,6 +9,12 @@
             <h2 class="bc-card-title">Sign In</h2>
         </div>
 
+        @if (session('status'))
+            <div class="bc-alert bc-alert-success" style="margin-bottom: 1rem;">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
@@ -51,7 +57,13 @@
                 Login
             </button>
 
-            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted, #888); font-size: 0.9rem;">
+            <p style="text-align: center; margin-top: 1rem; color: var(--text-muted, #888); font-size: 0.9rem;">
+                <a href="{{ route('password.request') }}" class="bc-btn bc-btn-ghost bc-btn-sm" style="padding: 0; border: none; text-decoration: underline;">
+                    Forgot your password?
+                </a>
+            </p>
+
+            <p style="text-align: center; margin-top: 0.5rem; color: var(--text-muted, #888); font-size: 0.9rem;">
                 Don't have an account?
                 <a href="{{ route('register') }}" class="bc-btn bc-btn-ghost bc-btn-sm" style="padding: 0; border: none; text-decoration: underline;">
                     Register

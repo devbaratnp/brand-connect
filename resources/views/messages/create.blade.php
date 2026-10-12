@@ -23,7 +23,7 @@
                 @foreach($users as $user)
                     @if($user->id !== auth()->id())
                         <option value="{{ $user->id }}" {{ old('receiver_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
+                            {{ $user->name }} — {{ ucfirst($user->role) }}
                         </option>
                     @endif
                 @endforeach

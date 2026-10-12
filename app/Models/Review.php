@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Review extends Model
 {
     protected $fillable = [
-        'reviewer_id', 'reviewee_id', 'campaign_id', 'rating', 'review'
+        'reviewer_id', 'reviewee_id', 'campaign_id', 'rating', 'review',
     ];
 
     public function reviewer(): BelongsTo

@@ -1,16 +1,18 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AiController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CreatorProfileController;
 use App\Http\Controllers\BrandProfileController;
 use App\Http\Controllers\CampaignController;
-use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\CreatorProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeliverableController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\EmployeeController;
+use App\Models\Campaign;
+use Illuminate\Support\Facades\Route;
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -19,6 +21,12 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Password Reset
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
 // Protected routes
 Route::middleware('auth')->group(function () {
     // Dashboard
@@ -26,11 +34,11 @@ Route::middleware('auth')->group(function () {
 
     // Creator Profile
     Route::get('/creator/profile', [CreatorProfileController::class, 'edit'])->name('creator.profile');
-    Route::post('/creator/profile', [CreatorProfileController::class, 'update'])->name('creator.profile.update');
+    Route::put('/creator/profile', [CreatorProfileController::class, 'update'])->name('creator.profile.update');
 
     // Brand Profile
     Route::get('/brand/profile', [BrandProfileController::class, 'edit'])->name('brand.profile');
-    Route::post('/brand/profile', [BrandProfileController::class, 'update'])->name('brand.profile.update');
+    Route::put('/brand/profile', [BrandProfileController::class, 'update'])->name('brand.profile.update');
 
     // Campaigns
     Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
@@ -60,9 +68,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages/{message}', [MessageController::class, 'show'])->name('messages.show');
     Route::get('/messages/conversation/{user}', [MessageController::class, 'conversation'])->name('messages.conversation');
 
+    // Deliverables
+    Route::get('/deliverables', [DeliverableController::class, 'index'])->name('deliverables.index');
+
     // Reviews
+    Route::get('/campaigns/{campaign}/reviews/create', [ReviewController::class, 'create'])->name('reviews.create');
     Route::post('/campaigns/{campaign}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::get('/reviews/{user}', [App\Http\Controllers\ReviewController::class, 'show'])->name('reviews.show');
+    Route::get('/reviews/{user}', [ReviewController::class, 'show'])->name('reviews.show');
 
     // Admin routes
     Route::prefix('admin')->group(function () {
@@ -78,17 +90,16 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+// AI Chat Assistant (works for both guests and authenticated users)
+Route::post('/ai/chat', [AiController::class, 'chat'])->name('ai.chat');
+
 // Landing page
 Route::get('/', function () {
-    return view('landing');
+    $openWork = Campaign::with('brand', 'category')
+        ->where('status', 'open')
+        ->latest()
+        ->take(6)
+        ->get();
+
+    return view('landing', compact('openWork'));
 });
-
-// Employee CRUD (existing)
-
-Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
-Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
-Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
-Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
-Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
-Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');

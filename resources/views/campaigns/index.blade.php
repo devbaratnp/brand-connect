@@ -25,7 +25,7 @@
                     <div class="bc-card-header bc-flex" style="justify-content:space-between;align-items:start;">
                         <div>
                             <h3 class="bc-card-title">{{ $campaign->title }}</h3>
-                            <p style="color:var(--bc-text-muted);font-size:.875rem;margin-top:.25rem;">{{ $campaign->brand->name ?? 'Brand' }}</p>
+                            <p style="color:var(--muted);font-size:.875rem;margin-top:.25rem;">{{ $campaign->brand->name ?? 'Brand' }}</p>
                         </div>
                         @if($campaign->status === 'open')
                             <span class="bc-badge bc-badge-open">Open</span>
@@ -33,14 +33,16 @@
                             <span class="bc-badge bc-badge-progress">In Progress</span>
                         @elseif($campaign->status === 'closed')
                             <span class="bc-badge bc-badge-closed">Closed</span>
+                        @elseif($campaign->status === 'cancelled')
+                            <span class="bc-badge bc-badge-cancelled">Cancelled</span>
                         @else
                             <span class="bc-badge bc-badge-pending">{{ ucfirst($campaign->status) }}</span>
                         @endif
                     </div>
                     <div class="bc-divider"></div>
                     <div class="bc-flex" style="justify-content:space-between;align-items:center;">
-                        <span style="font-size:1.1rem;font-weight:600;">Rs. {{ number_format($campaign->budget, 2) }}</span>
-                        <span style="color:var(--bc-text-muted);font-size:.875rem;">
+                        <span style="font-size:1.1rem;font-weight:600;">{{ $campaign->budget !== null ? 'Rs. ' . number_format($campaign->budget, 2) : 'Not specified' }}</span>
+                        <span style="color:var(--muted);font-size:.875rem;">
                             {{ $campaign->applications_count ?? $campaign->applications->count() }} applications
                         </span>
                     </div>

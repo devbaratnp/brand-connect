@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Review;
 use App\Models\Campaign;
+use App\Models\CampaignApplication;
+use App\Models\Review;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,11 +16,17 @@ class ReviewController extends Controller
         $this->middleware('auth');
     }
 
-    public function create(Campaign $campaign)
+    public function create(Request $request, Campaign $campaign)
     {
-        $this->authorize('view', $campaign);
+        $this->ensureParticipant($campaign);
 
-        return view('reviews.create', compact('campaign'));
+        $reviewee = null;
+        if ($request->query('for')) {
+            $reviewee = User::findOrFail($request->query('for'));
+            abort_unless($this->isValidReviewee($campaign, (int) $reviewee->id), 403);
+        }
+
+        return view('reviews.create', compact('campaign', 'reviewee'));
     }
 
     public function store(Request $request, Campaign $campaign)
@@ -28,6 +36,10 @@ class ReviewController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'review' => 'nullable|string|max:1000',
         ]);
+
+        if (! $this->isValidReviewee($campaign, (int) $data['reviewee_id'])) {
+            return back()->with('error', 'You can only review the brand or an accepted creator on this campaign.');
+        }
 
         $existing = Review::where('reviewer_id', Auth::id())
             ->where('reviewee_id', $data['reviewee_id'])
@@ -56,5 +68,27 @@ class ReviewController extends Controller
         $averageRating = $reviews->avg('rating');
 
         return view('reviews.show', compact('reviews', 'averageRating', 'user'));
+    }
+
+    private function ensureParticipant(Campaign $campaign): void
+    {
+        $user = Auth::user();
+        $ok = $user->id === $campaign->brand_id
+            || CampaignApplication::where('campaign_id', $campaign->id)
+                ->where('creator_id', $user->id)
+                ->where('status', 'accepted')->exists();
+        abort_unless($ok, 403);
+    }
+
+    private function isValidReviewee(Campaign $campaign, int $revieweeId): bool
+    {
+        if ($revieweeId === Auth::id()) {
+            return false;
+        }
+
+        return $revieweeId === $campaign->brand_id
+            || CampaignApplication::where('campaign_id', $campaign->id)
+                ->where('creator_id', $revieweeId)
+                ->where('status', 'accepted')->exists();
     }
 }

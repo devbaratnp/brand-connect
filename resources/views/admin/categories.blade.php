@@ -92,9 +92,8 @@
                             <td>{{ $category->creators_count ?? $category->creators->count() ?? 0 }}</td>
                             <td>{{ $category->campaigns_count ?? $category->campaigns->count() ?? 0 }}</td>
                             <td>
-                                <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm('Delete this category?');">
+                                <form method="POST" action="{{ route('admin.categories.delete', $category) }}" onsubmit="return confirm('Delete this category?');">
                                     @csrf
-                                    @method('DELETE')
                                     <button type="submit" class="bc-btn bc-btn-danger bc-btn-xs">Delete</button>
                                 </form>
                             </td>

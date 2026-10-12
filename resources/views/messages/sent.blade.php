@@ -22,13 +22,13 @@
             @foreach($messages as $message)
                 <a href="{{ route('messages.show', $message) }}" style="text-decoration:none;color:inherit;">
                     <div class="bc-list-item bc-flex" style="gap:1rem;align-items:center;padding:.75rem 1rem;">
-                        <div style="width:44px;height:44px;border-radius:50%;background:var(--bc-bg-alt);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--bc-text-muted);flex-shrink:0;">
+                        <div style="width:44px;height:44px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--muted);flex-shrink:0;">
                             {{ substr($message->receiver->name ?? 'U', 0, 1) }}
                         </div>
                         <div style="flex:1;min-width:0;">
                             <div class="bc-flex" style="justify-content:space-between;align-items:center;">
                                 <span class="bc-list-item-title">To: {{ $message->receiver->name ?? 'Unknown' }}</span>
-                                <span style="font-size:.75rem;color:var(--bc-text-muted);flex-shrink:0;margin-left:1rem;">
+                                <span style="font-size:.75rem;color:var(--muted);flex-shrink:0;margin-left:1rem;">
                                     {{ $message->created_at->diffForHumans() }}
                                 </span>
                             </div>
@@ -44,5 +44,8 @@
             @endforeach
         </div>
     </div>
+    @if($messages->hasPages())
+        <div class="bc-pagination">{{ $messages->links() }}</div>
+    @endif
 @endif
 @endsection

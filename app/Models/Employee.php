@@ -18,7 +18,7 @@ class Employee extends Model
     ];
 
     protected $casts = [
-        'salary'    => 'decimal:2',
+        'salary' => 'decimal:2',
         'hire_date' => 'date',
         'is_active' => 'boolean',
     ];

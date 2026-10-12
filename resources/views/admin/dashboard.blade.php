@@ -8,20 +8,35 @@
 </div>
 
 <div class="bc-grid-3" style="margin-bottom: 2rem;">
-    <div class="bc-stat bc-stat-lime">
-        <div class="bc-stat-label">Total Users</div>
-        <div class="bc-stat-value">{{ number_format($stats['total_users']) }}</div>
-        <div class="bc-stat-sub">{{ $stats['total_creators'] }} creators &middot; {{ $stats['total_brands'] }} brands</div>
+    <div class="bc-stat">
+        <div class="bc-stat-icon bc-stat-icon-lime">
+            <i class="bi bi-people"></i>
+        </div>
+        <div>
+            <span class="bc-stat-value">{{ number_format($stats['total_users']) }}</span>
+            <span class="bc-stat-label">Total Users</span>
+            <span class="bc-stat-sub">{{ $stats['total_creators'] }} creators &middot; {{ $stats['total_brands'] }} brands</span>
+        </div>
     </div>
-    <div class="bc-stat bc-stat-purple">
-        <div class="bc-stat-label">Total Campaigns</div>
-        <div class="bc-stat-value">{{ number_format($stats['total_campaigns']) }}</div>
-        <div class="bc-stat-sub">All time</div>
+    <div class="bc-stat">
+        <div class="bc-stat-icon bc-stat-icon-purple">
+            <i class="bi bi-megaphone"></i>
+        </div>
+        <div>
+            <span class="bc-stat-value">{{ number_format($stats['total_campaigns']) }}</span>
+            <span class="bc-stat-label">Total Campaigns</span>
+            <span class="bc-stat-sub">All time</span>
+        </div>
     </div>
-    <div class="bc-stat bc-stat-dark">
-        <div class="bc-stat-label">Applications</div>
-        <div class="bc-stat-value">{{ number_format($stats['total_applications']) }}</div>
-        <div class="bc-stat-sub">{{ $stats['pending_applications'] }} pending review</div>
+    <div class="bc-stat">
+        <div class="bc-stat-icon bc-stat-icon-ink">
+            <i class="bi bi-file-earmark-text"></i>
+        </div>
+        <div>
+            <span class="bc-stat-value">{{ number_format($stats['total_applications']) }}</span>
+            <span class="bc-stat-label">Applications</span>
+            <span class="bc-stat-sub">{{ $stats['pending_applications'] }} pending review</span>
+        </div>
     </div>
 </div>
 

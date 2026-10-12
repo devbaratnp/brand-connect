@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MessageReceivedMail;
 use App\Models\Campaign;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class MessageController extends Controller
 {
@@ -61,9 +63,11 @@ class MessageController extends Controller
 
         $data['sender_id'] = Auth::id();
 
-        Message::create($data);
+        $message = Message::create($data);
 
-        return redirect()->route('messages.inbox')->with('success', 'Message sent successfully.');
+        Mail::to($message->receiver->email)->send(new MessageReceivedMail($message));
+
+        return redirect()->route('messages.conversation', $data['receiver_id'])->with('success', 'Message sent successfully.');
     }
 
     public function show(Message $message)
@@ -72,7 +76,7 @@ class MessageController extends Controller
             abort(403);
         }
 
-        if ($message->receiver_id === Auth::id() && !$message->read_at) {
+        if ($message->receiver_id === Auth::id() && ! $message->read_at) {
             $message->update(['read_at' => now()]);
         }
 

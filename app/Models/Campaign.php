@@ -10,7 +10,7 @@ class Campaign extends Model
 {
     protected $fillable = [
         'brand_id', 'title', 'description', 'category_id',
-        'budget', 'deadline', 'requirements', 'status'
+        'budget', 'deadline', 'requirements', 'status',
     ];
 
     public function brand(): BelongsTo

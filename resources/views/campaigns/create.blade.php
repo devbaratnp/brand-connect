@@ -34,8 +34,8 @@
 
         <div class="bc-grid-2">
             <div class="bc-form-group">
-                <label class="bc-label" for="category_id">Category</label>
-                <select name="category_id" id="category_id" class="bc-input" required>
+                <label class="bc-label" for="category_id">Category <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+                <select name="category_id" id="category_id" class="bc-input">
                     <option value="">Select category</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -49,8 +49,8 @@
             </div>
 
             <div class="bc-form-group">
-                <label class="bc-label" for="budget">Budget (Rs.)</label>
-                <input type="number" name="budget" id="budget" class="bc-input" value="{{ old('budget') }}" min="0" step="0.01" placeholder="0.00" required>
+                <label class="bc-label" for="budget">Budget (Rs.) <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+                <input type="number" name="budget" id="budget" class="bc-input" value="{{ old('budget') }}" min="0" step="0.01" placeholder="0.00">
                 @error('budget')
                     <p class="bc-error">{{ $message }}</p>
                 @enderror
@@ -58,8 +58,8 @@
         </div>
 
         <div class="bc-form-group">
-            <label class="bc-label" for="deadline">Deadline</label>
-            <input type="date" name="deadline" id="deadline" class="bc-input" value="{{ old('deadline') }}" required>
+            <label class="bc-label" for="deadline">Deadline <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+            <input type="date" name="deadline" id="deadline" class="bc-input" value="{{ old('deadline') }}">
             @error('deadline')
                 <p class="bc-error">{{ $message }}</p>
             @enderror
@@ -74,7 +74,7 @@
         </div>
 
         <div class="bc-flex" style="justify-content:flex-end;gap:.75rem;margin-top:1rem;">
-            <a href="{{ route('campaigns.index') }}" class="bc-btn bc-btn-ghost">Cancel</a>
+            <a href="{{ route('brand.campaigns') }}" class="bc-btn bc-btn-ghost">Cancel</a>
             <button type="submit" class="bc-btn bc-btn-primary">Create Campaign</button>
         </div>
     </form>

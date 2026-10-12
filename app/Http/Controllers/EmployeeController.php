@@ -10,6 +10,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::orderBy('created_at', 'desc')->get();
+
         return view('employees.index', compact('employees'));
     }
 
@@ -21,25 +22,25 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:employees,email|max:255',
-            'phone'      => 'nullable|string|max:20',
-            'position'   => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:employees,email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'position' => 'required|string|max:255',
             'department' => 'required|string|max:255',
-            'salary'     => 'required|numeric|min:0',
-            'hire_date'  => 'required|date',
-            'is_active'  => 'nullable|boolean',
+            'salary' => 'required|numeric|min:0',
+            'hire_date' => 'required|date',
+            'is_active' => 'nullable|boolean',
         ]);
 
         Employee::create([
-            'name'       => $validated['name'],
-            'email'      => $validated['email'],
-            'phone'      => $validated['phone'] ?? null,
-            'position'   => $validated['position'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'position' => $validated['position'],
             'department' => $validated['department'],
-            'salary'     => $validated['salary'],
-            'hire_date'  => $validated['hire_date'],
-            'is_active'  => $request->has('is_active'),
+            'salary' => $validated['salary'],
+            'hire_date' => $validated['hire_date'],
+            'is_active' => $request->has('is_active'),
         ]);
 
         return redirect()->route('employees.index')
@@ -59,25 +60,25 @@ class EmployeeController extends Controller
     public function update(Request $request, Employee $employee)
     {
         $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|max:255|unique:employees,email,' . $employee->id,
-            'phone'      => 'nullable|string|max:20',
-            'position'   => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:employees,email,'.$employee->id,
+            'phone' => 'nullable|string|max:20',
+            'position' => 'required|string|max:255',
             'department' => 'required|string|max:255',
-            'salary'     => 'required|numeric|min:0',
-            'hire_date'  => 'required|date',
-            'is_active'  => 'nullable|boolean',
+            'salary' => 'required|numeric|min:0',
+            'hire_date' => 'required|date',
+            'is_active' => 'nullable|boolean',
         ]);
 
         $employee->update([
-            'name'       => $validated['name'],
-            'email'      => $validated['email'],
-            'phone'      => $validated['phone'] ?? null,
-            'position'   => $validated['position'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'position' => $validated['position'],
             'department' => $validated['department'],
-            'salary'     => $validated['salary'],
-            'hire_date'  => $validated['hire_date'],
-            'is_active'  => $request->has('is_active'),
+            'salary' => $validated['salary'],
+            'hire_date' => $validated['hire_date'],
+            'is_active' => $request->has('is_active'),
         ]);
 
         return redirect()->route('employees.index')

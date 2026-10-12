@@ -14,6 +14,7 @@ class CampaignController extends Controller
         $campaigns = Campaign::with('brand', 'category')
             ->latest()
             ->paginate(12);
+
         return view('campaigns.index', compact('campaigns'));
     }
 
@@ -23,6 +24,7 @@ class CampaignController extends Controller
         $hasApplied = Auth::check() && Auth::user()->isCreator()
             ? $campaign->applications()->where('creator_id', Auth::id())->exists()
             : false;
+
         return view('campaigns.show', compact('campaign', 'hasApplied'));
     }
 
@@ -30,6 +32,7 @@ class CampaignController extends Controller
     {
         $this->authorizeBrand();
         $categories = Category::all();
+
         return view('campaigns.create', compact('categories'));
     }
 
@@ -60,6 +63,7 @@ class CampaignController extends Controller
         $this->authorizeOwner($campaign);
 
         $categories = Category::all();
+
         return view('campaigns.edit', compact('campaign', 'categories'));
     }
 
@@ -75,7 +79,7 @@ class CampaignController extends Controller
             'budget' => 'nullable|numeric|min:0',
             'deadline' => 'nullable|date',
             'requirements' => 'nullable|string',
-            'status' => 'nullable|in:open,closed,cancelled',
+            'status' => 'nullable|in:open,in_progress,closed,cancelled',
         ]);
 
         $campaign->update($data);
@@ -100,6 +104,7 @@ class CampaignController extends Controller
             ->with('applications')
             ->latest()
             ->get();
+
         return view('brand.campaigns', compact('campaigns'));
     }
 
@@ -109,12 +114,13 @@ class CampaignController extends Controller
             ->with('brand.brandProfile', 'category')
             ->latest()
             ->paginate(12);
+
         return view('campaigns.browse', compact('campaigns'));
     }
 
     protected function authorizeBrand(): void
     {
-        if (!Auth::user()->isBrand()) {
+        if (! Auth::user()->isBrand()) {
             abort(403);
         }
     }

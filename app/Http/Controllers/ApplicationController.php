@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ApplicationReceivedMail;
+use App\Mail\ApplicationStatusChangedMail;
 use App\Models\Campaign;
 use App\Models\CampaignApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
     public function apply(Request $request, Campaign $campaign)
     {
-        if (!Auth::user()->isCreator()) {
+        if (! Auth::user()->isCreator()) {
             abort(403);
         }
 
@@ -24,7 +27,7 @@ class ApplicationController extends Controller
             ->exists();
 
         if ($exists) {
-            return back()->with('error', 'You have already applied for this campaign.');
+            return redirect()->route('creator.applications')->with('error', 'You have already applied for this campaign. You can track it below.');
         }
 
         $data = $request->validate([
@@ -37,12 +40,17 @@ class ApplicationController extends Controller
             'message' => $data['message'] ?? null,
         ]);
 
+        Mail::to($campaign->brand->email)->send(new ApplicationReceivedMail(
+            CampaignApplication::where('campaign_id', $campaign->id)->where('creator_id', Auth::id())->first(),
+            $campaign
+        ));
+
         return back()->with('success', 'Application submitted successfully.');
     }
 
     public function myApplications()
     {
-        if (!Auth::user()->isCreator()) {
+        if (! Auth::user()->isCreator()) {
             abort(403);
         }
 
@@ -56,7 +64,7 @@ class ApplicationController extends Controller
 
     public function manage(Campaign $campaign)
     {
-        if (!Auth::user()->isBrand() || $campaign->brand_id !== Auth::id()) {
+        if (! Auth::user()->isBrand() || $campaign->brand_id !== Auth::id()) {
             abort(403);
         }
 
@@ -70,7 +78,7 @@ class ApplicationController extends Controller
 
     public function updateStatus(Request $request, Campaign $campaign, CampaignApplication $application)
     {
-        if (!Auth::user()->isBrand() || $campaign->brand_id !== Auth::id()) {
+        if (! Auth::user()->isBrand() || $campaign->brand_id !== Auth::id()) {
             abort(403);
         }
 
@@ -84,9 +92,17 @@ class ApplicationController extends Controller
 
         $application->update(['status' => $data['status']]);
 
-        $allStatuses = $campaign->applications()->pluck('status');
+        Mail::to($application->creator->email)->send(new ApplicationStatusChangedMail(
+            $application,
+            $campaign,
+            $data['status']
+        ));
+
         if ($data['status'] === 'accepted') {
             $campaign->update(['status' => 'in_progress']);
+        } elseif ($campaign->status === 'in_progress'
+            && ! $campaign->applications()->where('status', 'accepted')->exists()) {
+            $campaign->update(['status' => 'open']);
         }
 
         return back()->with('success', 'Application status updated successfully.');

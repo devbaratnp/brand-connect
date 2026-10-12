@@ -56,9 +56,8 @@
                                         {{ ($user->is_active ?? true) ? 'Deactivate' : 'Activate' }}
                                     </button>
                                 </form>
-                                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <form method="POST" action="{{ route('admin.users.delete', $user) }}" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                     @csrf
-                                    @method('DELETE')
                                     <button type="submit" class="bc-btn bc-btn-danger bc-btn-xs">Delete</button>
                                 </form>
                             </div>

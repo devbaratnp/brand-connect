@@ -5,7 +5,7 @@
 @section('content')
 <div class="bc-page-header">
     <h1 class="bc-page-title">Browse Campaigns</h1>
-    <p style="color:var(--bc-text-muted);margin-top:.25rem;">Find campaigns that match your skills and apply.</p>
+    <p style="color:var(--muted);margin-top:.25rem;">Find campaigns that match your skills and apply.</p>
 </div>
 
 @if($campaigns->isEmpty())
@@ -27,7 +27,7 @@
                             <span class="bc-badge bc-badge-open">Open</span>
                         @endif
                     </div>
-                    <p style="color:var(--bc-text-muted);font-size:.875rem;margin-top:.25rem;">
+                    <p style="color:var(--muted);font-size:.875rem;margin-top:.25rem;">
                         {{ $campaign->brand->name ?? 'Brand' }}
                     </p>
                 </div>
@@ -35,11 +35,11 @@
                 <div class="bc-list">
                     <div class="bc-list-item" style="padding:.5rem 0;">
                         <span class="bc-list-item-sub">Budget</span>
-                        <span class="bc-list-item-title">Rs. {{ number_format($campaign->budget, 2) }}</span>
+                        <span class="bc-list-item-title">{{ $campaign->budget !== null ? 'Rs. ' . number_format($campaign->budget, 2) : 'Not specified' }}</span>
                     </div>
                     <div class="bc-list-item" style="padding:.5rem 0;">
                         <span class="bc-list-item-sub">Deadline</span>
-                        <span class="bc-list-item-title">{{ \Carbon\Carbon::parse($campaign->deadline)->format('M d, Y') }}</span>
+                        <span class="bc-list-item-title">{{ $campaign->deadline ? \Carbon\Carbon::parse($campaign->deadline)->format('M d, Y') : 'Flexible' }}</span>
                     </div>
                     <div class="bc-list-item" style="padding:.5rem 0;">
                         <span class="bc-list-item-sub">Category</span>

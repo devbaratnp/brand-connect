@@ -44,9 +44,8 @@
                         </td>
                         <td>{{ $campaign->created_at->format('M d, Y') }}</td>
                         <td>
-                            <form method="POST" action="{{ route('admin.campaigns.destroy', $campaign) }}" onsubmit="return confirm('Are you sure you want to delete this campaign?');">
+                            <form method="POST" action="{{ route('admin.campaigns.delete', $campaign) }}" onsubmit="return confirm('Are you sure you want to delete this campaign?');">
                                 @csrf
-                                @method('DELETE')
                                 <button type="submit" class="bc-btn bc-btn-danger bc-btn-xs">Delete</button>
                             </form>
                         </td>

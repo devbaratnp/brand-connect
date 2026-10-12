@@ -12,9 +12,10 @@ class BrandProfileController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isBrand()) {
+            if (! Auth::user()->isBrand()) {
                 abort(403);
             }
+
             return $next($request);
         });
     }
@@ -22,6 +23,7 @@ class BrandProfileController extends Controller
     public function edit()
     {
         $profile = Auth::user()->brandProfile;
+
         return view('brand.profile', compact('profile'));
     }
 

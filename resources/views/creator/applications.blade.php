@@ -13,7 +13,7 @@
             <div class="bc-empty-icon">&#128640;</div>
             <p class="bc-empty-text">No applications yet</p>
             <p class="bc-empty-sub">Browse available campaigns and send your first application.</p>
-            <a href="{{ route('campaigns.index') }}" class="bc-btn bc-btn-primary" style="margin-top: 1rem;">Browse Campaigns</a>
+            <a href="{{ route('campaigns.browse') }}" class="bc-btn bc-btn-primary" style="margin-top: 1rem;">Browse Campaigns</a>
         </div>
     </div>
 @else
@@ -42,7 +42,7 @@
                         </td>
                         <td>{{ $application->created_at->format('M d, Y') }}</td>
                         <td style="max-width: 260px;">
-                            <span style="color: var(--bc-muted, #6b7280);">{{ Str::limit($application->message ?? '—', 60) }}</span>
+                            <span style="color: var(--muted);">{{ Str::limit($application->message ?? '—', 60) }}</span>
                         </td>
                     </tr>
                 @endforeach

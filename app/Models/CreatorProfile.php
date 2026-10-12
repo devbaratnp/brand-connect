@@ -11,7 +11,7 @@ class CreatorProfile extends Model
         'user_id', 'category_id', 'niche', 'location',
         'social_media_platform', 'social_media_link', 'follower_count',
         'engagement_rate', 'portfolio', 'price_per_post',
-        'audience_details', 'availability'
+        'audience_details', 'availability',
     ];
 
     public function user(): BelongsTo
